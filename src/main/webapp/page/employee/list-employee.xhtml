@@ -1,0 +1,123 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://java.sun.com/jsf/html">
+
+	<h:outputStylesheet library="css" name="/employee/list-employee.css" />
+	<div class="container">
+		<h1>Employee Management</h1>
+
+		<h:form id="messages">
+			<h:messages id="msgArea" globalOnly="true" layout="table"
+				showDetail="true" showSummary="false" styleClass="message-area"
+				infoClass="msg-info" warnClass="msg-warn" errorClass="msg-error"
+				fatalClass="msg-fatal" />
+		</h:form>
+
+
+		<div class="flex justify-content-between align-center">
+			<div>
+				<h3>Employees(#{employeeBean.totalRecords})</h3>
+			</div>
+			<div
+				style="display: flex; justify-content: space-between; align-items: center;">
+				<h:form>
+					<h:commandButton value="Add New Employee"
+						styleClass="btn btn-primary">
+
+						<f:ajax listener="#{employeeBean.gotoAddPage}" execute="@this"
+							render=":contentArea" />
+					</h:commandButton>
+
+					<p:commandButton value="Add Employee Dialog"
+						styleClass="btn btn-primary btn-ov"
+						action="#{employeeBean.prepareNewEmployee}"
+						update=":addEmployeeForm" process="@form"
+						oncomplete="PF('addEmployeeDialog').show()">
+					</p:commandButton>
+				</h:form>
+			</div>
+		</div>
+
+		<div id="filter-field">
+			<h:form id="filter-form">
+				<div class="search-container">
+					<h:inputText id="searchByName"
+						value="#{employeeBean.searchKeyword}" styleClass="search-input">
+						<f:ajax event="keyup" listener="#{employeeBean.searchEmployees}"
+							render=":messages :employee-table :pagination-form" delay="300" />
+						<f:passThroughAttribute name="placeholder"
+							value="Search employee by name" />
+					</h:inputText>
+				</div>
+			</h:form>
+		</div>
+
+		<h:dataTable id="employee-table" value="#{employeeBean.employees}"
+			var="emp" styleClass="employee-table" headerClass="table-header"
+			rowClasses="table-row">
+			<h:column>
+				<f:facet name="header">Employee Code</f:facet>
+                    #{emp.employeeCode}
+                </h:column>
+			<h:column>
+				<f:facet name="header">Employee Name</f:facet>
+				<h:outputText value="#{emp.employeeName}" converter="employeeNameConverter" />
+			</h:column>
+			<h:column>
+				<f:facet name="header">Age</f:facet>
+                    #{emp.employeeAge}
+                </h:column>
+			<h:column>
+				<f:facet name="header">Date of Birth</f:facet>
+                    #{emp.dateOfBirth}
+                </h:column>
+			<h:column styleClass="actions-column">
+				<f:facet name="header">Actions</f:facet>
+				<div class="action-buttons-inline">
+					<h:form>
+
+						<h:commandButton value="Edit" styleClass="btn btn-sm btn-warning">
+							<f:ajax execute="@this" render=":contentArea"
+								listener="#{employeeBean.editEmployee(emp)}" />
+						</h:commandButton>
+
+						<h:commandButton value="Delete"
+							actionListener="#{employeeBean.deleteEmployee(emp)}"
+							styleClass="btn btn-sm btn-danger"
+							onclick="return confirm('Are you sure you want to delete #{emp.employeeName}?')">
+							<f:ajax execute="@this" render=":messages :contentArea"
+								listener="#{employeeBean.deleteEmployee(emp.employeeCode)}" />
+						</h:commandButton>
+
+						<!-- <p:commandButton value="Delete" styleClass="btn btn-danger btn-ov"
+							action="#{employeeBean.prepareDeleteEmployee(emp)}"
+							oncomplete="PF('deleteEmployeeDialog').show()"
+							update=":deleteEmployeeForm" process="@this">
+							<f:setPropertyActionListener
+								target="#{employeeBean.deleteEmployee}" value="#{emp}" />
+						</p:commandButton> -->
+					</h:form>
+				</div>
+			</h:column>
+		</h:dataTable>
+
+
+		<h:form id="pagination-form">
+			<div class="pagination-container">
+				<div class="pagination-buttons">
+
+					<ui:repeat value="#{employeeBean.paginationPages}" var="page">
+						<h:commandButton value="#{page}"
+							styleClass="btn #{page == employeeBean.currentPage ? 'btn-primary' : 'btn-secondary'}">
+							<f:ajax listener="#{employeeBean.goToPage(page)}"
+								render=":employee-table :pagination-form" execute="@this" />
+						</h:commandButton>
+					</ui:repeat>
+				</div>
+			</div>
+		</h:form>
+	</div>
+</ui:composition>

@@ -1,0 +1,202 @@
+<!-- File: /resources/components/button.xhtml -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:composite="http://xmlns.jcp.org/jsf/composite">
+
+    <composite:interface>
+        <composite:attribute name="value" required="false" default="Button"/>
+        <composite:attribute name="action" required="false" method-signature="java.lang.String action()"/>
+        <composite:attribute name="actionListener" required="false" method-signature="void listener(javax.faces.event.ActionEvent)"/>
+        
+        <composite:attribute name="type" required="false" default="button" type="java.lang.String"/>
+        <composite:attribute name="color" required="false" default="primary" type="java.lang.String"/>
+        <composite:attribute name="size" required="false" default="medium" type="java.lang.String"/>
+        <composite:attribute name="variant" required="false" default="contained" type="java.lang.String"/>
+        
+        <composite:attribute name="icon" required="false" type="java.lang.String"/>
+        <composite:attribute name="iconPos" required="false" default="left" type="java.lang.String"/>
+        
+        <composite:attribute name="disabled" required="false" default="false" type="java.lang.Boolean"/>
+        <composite:attribute name="loading" required="false" default="false" type="java.lang.Boolean"/>
+        
+        <composite:attribute name="styleClass" required="false" type="java.lang.String"/>
+        <composite:attribute name="style" required="false" type="java.lang.String"/>
+    </composite:interface>
+
+    <composite:implementation>
+        <h:outputStylesheet>
+            .custom-button {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                border: none;
+                border-radius: 4px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                font-family: system-ui, -apple-system, sans-serif;
+                outline: none;
+            }
+            
+            .custom-button:focus {
+                box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+            }
+            
+            /* Sizes */
+            .btn-small {
+                padding: 6px 12px;
+                font-size: 13px;
+                min-height: 32px;
+            }
+            
+            .btn-medium {
+                padding: 8px 16px;
+                font-size: 14px;
+                min-height: 40px;
+            }
+            
+            .btn-large {
+                padding: 12px 24px;
+                font-size: 16px;
+                min-height: 48px;
+            }
+            
+            /* Contained Primary */
+            .btn-contained.btn-primary {
+                background-color: #1976d2;
+                color: white;
+            }
+            
+            .btn-contained.btn-primary:hover:not(:disabled) {
+                background-color: #1565c0;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            }
+            
+            /* Contained Secondary */
+            .btn-contained.btn-secondary {
+                background-color: #dc004e;
+                color: white;
+            }
+            
+            .btn-contained.btn-secondary:hover:not(:disabled) {
+                background-color: #c51162;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            }
+            
+            /* Contained Success */
+            .btn-contained.btn-success {
+                background-color: #2e7d32;
+                color: white;
+            }
+            
+            .btn-contained.btn-success:hover:not(:disabled) {
+                background-color: #1b5e20;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            }
+            
+            /* Outlined Primary */
+            .btn-outlined.btn-primary {
+                background-color: transparent;
+                color: #1976d2;
+                border: 1px solid #1976d2;
+            }
+            
+            .btn-outlined.btn-primary:hover:not(:disabled) {
+                background-color: rgba(25, 118, 210, 0.04);
+            }
+            
+            /* Outlined Secondary */
+            .btn-outlined.btn-secondary {
+                background-color: transparent;
+                color: #dc004e;
+                border: 1px solid #dc004e;
+            }
+            
+            .btn-outlined.btn-secondary:hover:not(:disabled) {
+                background-color: rgba(220, 0, 78, 0.04);
+            }
+            
+            /* Text variant */
+            .btn-text.btn-primary {
+                background-color: transparent;
+                color: #1976d2;
+            }
+            
+            .btn-text.btn-primary:hover:not(:disabled) {
+                background-color: rgba(25, 118, 210, 0.04);
+            }
+            
+            .btn-text.btn-secondary {
+                background-color: transparent;
+                color: #dc004e;
+            }
+            
+            .btn-text.btn-secondary:hover:not(:disabled) {
+                background-color: rgba(220, 0, 78, 0.04);
+            }
+            
+            /* Disabled state */
+            .custom-button:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+            }
+            
+            /* Loading state */
+            .btn-loading {
+                position: relative;
+                pointer-events: none;
+            }
+            
+            .btn-loading .btn-content {
+                visibility: hidden;
+            }
+            
+            .spinner {
+                position: absolute;
+                width: 16px;
+                height: 16px;
+                border: 2px solid rgba(255,255,255,0.3);
+                border-top-color: white;
+                border-radius: 50%;
+                animation: spin 0.8s linear infinite;
+            }
+            
+            .btn-outlined .spinner,
+            .btn-text .spinner {
+                border-color: rgba(0,0,0,0.2);
+                border-top-color: currentColor;
+            }
+            
+            @keyframes spin {
+                to { transform: rotate(360deg); }
+            }
+        </h:outputStylesheet>
+
+        <h:commandButton
+            value="#{cc.attrs.value}"
+            action="#{cc.attrs.action}"
+            actionListener="#{cc.attrs.actionListener}"
+            type="#{cc.attrs.type}"
+            disabled="#{cc.attrs.disabled or cc.attrs.loading}"
+            styleClass="custom-button btn-#{cc.attrs.variant} btn-#{cc.attrs.color} btn-#{cc.attrs.size} #{cc.attrs.loading ? 'btn-loading' : ''} #{cc.attrs.styleClass}"
+            style="#{cc.attrs.style}">
+            
+            <h:panelGroup styleClass="btn-content" layout="block">
+                <h:panelGroup rendered="#{cc.attrs.icon != null and cc.attrs.iconPos == 'left'}">
+                    <i class="#{cc.attrs.icon}"></i>
+                </h:panelGroup>
+                
+                <h:outputText value="#{cc.attrs.value}"/>
+                
+                <h:panelGroup rendered="#{cc.attrs.icon != null and cc.attrs.iconPos == 'right'}">
+                    <i class="#{cc.attrs.icon}"></i>
+                </h:panelGroup>
+            </h:panelGroup>
+            
+            <h:panelGroup rendered="#{cc.attrs.loading}" styleClass="spinner"/>
+        </h:commandButton>
+    </composite:implementation>
+</ui:composition>

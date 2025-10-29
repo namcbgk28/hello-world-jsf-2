@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html">
+
+<h:head>
+	<title>Add Employee Page</title>
+	<h:outputStylesheet name="css/employee/employee.css" />
+</h:head>
+<h:body>
+	<div class="form-container ">
+		<h:form id="employee-form" styleClass="form-group">
+			<h2>Add New Employee</h2>
+
+			<div class="form-group">
+				<label for="employeeName">Employee Name:</label>
+				<h:inputText id="employeeName"
+					validator="#{employeeBean.validateEmployeeName}"
+					converter="employeeNameConverter"
+					value="#{employeeBean.newEmployee.employeeName}" required="true"
+					requiredMessage="Employee Name is required">
+					<f:ajax event="blur" render="employeeNameMsg employeeName" />
+				</h:inputText>
+				<h:message id="employeeNameMsg" for="employeeName"
+					styleClass="error-message" />
+			</div>
+
+			<div class="form-group">
+				<label for="dateOfBirth">Date Of Birth:</label>
+				<h:inputText id="dateOfBirth"
+					value="#{employeeBean.newEmployee.dateOfBirth}" required="true"
+					validator="#{employeeBean.validateDateOfBirth}"
+					converter="dateConverter"
+					requiredMessage="Employee Date Of Birth is required">
+					<f:ajax event="blur" render="dateOfBirth employeeDobMsg" />
+					<f:attribute name="originalValue"
+						value="#{employeeBean.newEmployee.dateOfBirth}" />
+				</h:inputText>
+				<h:message id="employeeDobMsg" for="dateOfBirth"
+					styleClass="error-message" />
+				<small>(Format: dd/MM/yyyy)</small>
+			</div>
+
+			<div class="form-group">
+				<label for="employeeAge">Employee Age:</label>
+				<h:inputText id="employeeAge" type="number"
+					value="#{employeeBean.newEmployee.employeeAge}" required="true"
+					requiredMessage="Employee Age is required">
+					<f:convertNumber integerOnly="true" />
+					<f:validateLongRange minimum="18" maximum="100" />
+					<f:ajax id="employeeAgeMsg" event="blur"
+						render="employeeAgeMsg employeeAge" />
+				</h:inputText>
+				<h:message id="employeeAgeMsg" for="employeeAge"
+					styleClass="error-message" />
+			</div>
+
+			<div class="form-group">
+				<h:commandButton value="Save" styleClass="btn btn-primary form-btn">
+					<f:ajax execute="@form" render="@form :contentArea"
+						listener="#{employeeBean.saveEmployee}" />
+				</h:commandButton>
+
+				<h:commandButton value="Cancel" immediate="true"
+					styleClass="btn btn-secondary form-btn">
+					<f:ajax render=":contentArea"
+						listener="#{employeeBean.gotoListPage}" />
+				</h:commandButton>
+			</div>
+
+		</h:form>
+	</div>
+</h:body>
+</html>

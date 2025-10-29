@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+<h:head>
+	<title>Employee Management</title>
+	<h:outputStylesheet library="css" name="template.css" />
+	<h:outputStylesheet library="webjars" name="font-awesome/4.7.0/css/font-awesome.min-jsf.css" />
+</h:head>
+
+<h:body>
+
+	<div class="layout">
+
+		<!-- Sidebar -->
+		<h:form id="mainForm">
+			<div class="sidebar">
+				<h3>Navigation</h3>
+				<ul>
+					<li><h:commandLink value="Home">
+							<f:ajax
+								listener="#{layoutBean.loadPage('/page/fragments/home.xhtml')}"
+								render="contentArea" />
+						</h:commandLink></li>
+					<li><h:commandLink value="Employee Management" escape="false">
+							<f:ajax
+								listener="#{layoutBean.loadPage('/page/employee/list-employee.xhtml')}"
+								render=":contentArea" />
+						</h:commandLink></li>
+					<li><h:commandLink value="About">
+							<f:ajax
+								listener="#{layoutBean.loadPage('/page/fragments/about.xhtml')}"
+								render="contentArea" />
+						</h:commandLink></li>
+				</ul>
+			</div>
+		</h:form>
+
+		<!-- Main Content -->
+		<div class="main-content">
+			<!-- Header -->
+			<div class="header">
+				<div>My JSF Application</div>
+			</div>
+
+			<!-- Content -->
+			<h:panelGroup id="contentArea">
+				<ui:include src="#{layoutBean.currentPage}" />
+			</h:panelGroup>
+
+			<!-- Footer -->
+			<div class="footer">
+				<p>
+					<i class="fas fa-copyright"></i> 2025 - My JSF Application
+					<i class="fa fa-arrow-up"></i> 2025 - My JSF Application
+				</p>
+			</div>
+		</div>
+	</div>
+	<ui:include src="/page/dialogs/employee/add-employee-dialog.xhtml" />
+	<ui:include src="/page/dialogs/employee/delete-employee-dialog.xhtml" />
+</h:body>
+</html>

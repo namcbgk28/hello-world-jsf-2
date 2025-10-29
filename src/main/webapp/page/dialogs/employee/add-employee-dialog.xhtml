@@ -1,0 +1,65 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+	<h:outputStylesheet name="css/employee/employee.css" />
+	<h:outputStylesheet library="css" name="template.css" />
+	
+	<p:dialog id="addEmployeeDialog" widgetVar="addEmployeeDialog"
+		header="Add New Employee" modal="true" width="600" appendTo="@(body)"
+		closable="true" resizable="false">
+
+		<h:form id="addEmployeeForm">
+			<div class="form-group">
+				<label for="employeeName">Employee Name:</label>
+				<h:inputText id="employeeName"
+					validator="#{employeeBean.validateEmployeeName}"
+					value="#{employeeBean.newEmployee.employeeName}" required="true"
+					requiredMessage="Employee Name is required"
+					styleClass="form-control">
+				</h:inputText>
+				<h:message for="employeeName" styleClass="error-message" />
+			</div>
+
+			<div class="form-group">
+				<label for="dateOfBirth">Date Of Birth:</label>
+				<h:inputText id="dateOfBirth"
+					value="#{employeeBean.newEmployee.dateOfBirth}" required="true"
+					validator="#{employeeBean.validateDateOfBirth}"
+					converter="dateConverter"
+					requiredMessage="Employee Date Of Birth is required"
+					styleClass="form-control">
+				</h:inputText>
+				<h:message for="dateOfBirth" styleClass="error-message" />
+				<small>(Format: dd/MM/yyyy)</small>
+			</div>
+
+			<div class="form-group">
+				<label for="employeeAge">Employee Age:</label>
+				<h:inputText id="employeeAge" type="number"
+					value="#{employeeBean.newEmployee.employeeAge}" required="true"
+					requiredMessage="Employee Age is required"
+					styleClass="form-control">
+					<f:convertNumber integerOnly="true" />
+					<f:validateLongRange minimum="18" maximum="100" />
+				</h:inputText>
+				<h:message for="employeeAge" styleClass="error-message" />
+			</div>
+
+			<div class="form-group" style="text-align: right; margin-top: 20px;">
+				<p:commandButton value="Save" styleClass="btn btn-primary btn-ov"
+					action="#{employeeBean.saveEmployee}"
+					update=":contentArea :addEmployeeForm"
+					oncomplete="if(args &amp;&amp; !args.validationFailed) PF('addEmployeeDialog').hide()">
+				</p:commandButton>
+
+				<p:commandButton value="Cancel" styleClass="btn btn-secondary btn-ov"
+					onclick="PF('addEmployeeDialog').hide()" type="button">
+				</p:commandButton>
+			</div>
+		</h:form>
+	</p:dialog>
+
+</ui:composition>
