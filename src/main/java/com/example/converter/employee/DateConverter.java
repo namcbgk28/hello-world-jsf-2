@@ -27,8 +27,6 @@ public class DateConverter implements Converter {
 			return null;
 		}
 		String trimmedValue = value.trim();
-		 Date originalDate = (Date) component.getAttributes().get("originalValue");
-		component.getAttributes().put("submittedValueForMessage", trimmedValue);
 		for (String format : PARSE_FORMATS) {
 			try {
 				SimpleDateFormat sdf = new SimpleDateFormat(format);
@@ -41,30 +39,8 @@ public class DateConverter implements Converter {
 			}
 		}
 
-//		return null;
-		resetInputInConverter(context, component, originalDate, trimmedValue);
-		return null;
-//		throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR,
-//				"Invalid date format. Please use dd/MM/yyyy. You entered: " + value, null));
-	}
-
-	private void resetInputInConverter(FacesContext context, UIComponent component, Date originalDate,
-			String invalidValue) {
-		UIInput input = (UIInput) component;
-
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-		if (originalDate != null) {
-			input.setSubmittedValue(dateFormat.format(originalDate));
-			input.setValue(originalDate);
-		} else {
-			input.setSubmittedValue("");
-			input.setValue(null);
-		}
-		
-		input.setValid(false);
-		
 		throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR,
-				"Invalid date format. Please use dd/MM/yyyy. You entered: " + invalidValue, null));
+				"Invalid date format. Please use dd/MM/yyyy. You entered: " + trimmedValue, null));
 	}
 
 	@Override

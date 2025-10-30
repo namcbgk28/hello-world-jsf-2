@@ -1,0 +1,207 @@
+/* Custom Input Field Container */
+.custom-input-field {
+    margin-bottom: 24px;
+    width: 100%;
+}
+
+/* Input Wrapper */
+.custom-input-wrapper {
+    position: relative;
+    margin-bottom: 4px;
+}
+
+/* Input Base Styles */
+.custom-input {
+    width: 100%;
+    padding: 16px 12px 8px 12px;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #333;
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.42);
+    border-radius: 4px 4px 0 0;
+    outline: none;
+    transition: all 0.2s ease-in-out;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+/* Remove default input styling */
+.custom-input::-webkit-input-placeholder {
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.custom-input::-moz-placeholder {
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+}
+
+/* Floating Label */
+.custom-label {
+    position: absolute;
+    left: 12px;
+    top: 16px;
+    font-size: 16px;
+    color: rgba(0, 0, 0, 0.6);
+    pointer-events: none;
+    transition: all 0.2s ease-in-out;
+    transform-origin: left top;
+    background-color: transparent;
+    padding: 0 4px;
+}
+
+/* Required Asterisk */
+.required-asterisk {
+    color: #f44336;
+    margin-left: 2px;
+}
+
+/* Label Float Animation */
+.custom-input:focus ~ .custom-label,
+.custom-input:not(:placeholder-shown) ~ .custom-label,
+.custom-input.has-value ~ .custom-label {
+    top: 4px;
+    font-size: 12px;
+    color: #1976d2;
+    transform: translateY(0);
+}
+
+/* Underline Animation */
+.custom-underline {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: #1976d2;
+    transform: scaleX(0);
+    transition: transform 0.2s ease-in-out;
+}
+
+/* Input Focus State */
+.custom-input:focus {
+    border-bottom-color: #1976d2;
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+.custom-input:focus ~ .custom-underline {
+    transform: scaleX(1);
+}
+
+/* Input Hover State */
+.custom-input:hover:not(:focus):not(:disabled) {
+    border-bottom-color: rgba(0, 0, 0, 0.87);
+    background-color: rgba(0, 0, 0, 0.04);
+}
+
+/* Disabled State */
+.custom-input:disabled {
+    color: rgba(0, 0, 0, 0.38);
+    border-bottom: 1px dotted rgba(0, 0, 0, 0.38);
+    background-color: transparent;
+    cursor: not-allowed;
+}
+
+.custom-input:disabled ~ .custom-label {
+    color: rgba(0, 0, 0, 0.38);
+}
+
+/* Readonly State */
+.custom-input:read-only {
+    border-bottom-color: rgba(0, 0, 0, 0.42);
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* Error State */
+.custom-input-field.error .custom-input,
+.custom-input.ui-state-error {
+    border-bottom-color: #f44336;
+}
+
+.custom-input-field.error .custom-label,
+.custom-input.ui-state-error ~ .custom-label {
+    color: #f44336;
+}
+
+.custom-input-field.error .custom-underline,
+.custom-input.ui-state-error ~ .custom-underline {
+    background-color: #f44336;
+}
+
+/* Error Message */
+.custom-error-message {
+    display: block;
+    color: #f44336;
+    font-size: 12px;
+    margin-top: 4px;
+    min-height: 18px;
+    line-height: 1.5;
+    animation: slideDown 0.2s ease-in-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Hint Text */
+.custom-hint {
+    display: block;
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 12px;
+    margin-top: 4px;
+    line-height: 1.5;
+}
+
+/* Number Input Styling */
+.custom-input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+.custom-input[type="number"]::-webkit-inner-spin-button,
+.custom-input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Success State (Optional) */
+.custom-input-field.success .custom-input {
+    border-bottom-color: #4caf50;
+}
+
+.custom-input-field.success .custom-label {
+    color: #4caf50;
+}
+
+.custom-input-field.success .custom-underline {
+    background-color: #4caf50;
+}
+
+/* Dark Theme Support (Optional) */
+@media (prefers-color-scheme: dark) {
+    .custom-input {
+        color: #fff;
+        border-bottom-color: rgba(255, 255, 255, 0.42);
+    }
+    
+    .custom-label {
+        color: rgba(255, 255, 255, 0.6);
+    }
+    
+    .custom-input:focus {
+        background-color: rgba(255, 255, 255, 0.05);
+    }
+    
+    .custom-input:hover:not(:focus):not(:disabled) {
+        border-bottom-color: rgba(255, 255, 255, 0.87);
+        background-color: rgba(255, 255, 255, 0.08);
+    }
+}

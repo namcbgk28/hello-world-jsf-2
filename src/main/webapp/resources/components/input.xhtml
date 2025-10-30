@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+<composite:interface>
+	<composite:attribute name="id" required="true" />
+	<composite:attribute name="label" required="true" />
+	<composite:attribute name="value" required="true" />
+	<composite:attribute name="required" type="java.lang.Boolean"
+		default="false" />
+	<composite:attribute name="requiredMessage" type="java.lang.String" />
+	<composite:attribute name="type" type="java.lang.String" default="text" />
+	<composite:attribute name="hint" type="java.lang.String" />
+	<composite:attribute name="ajaxEvent" type="java.lang.String"
+		default="blur" />
+	<composite:attribute name="ajaxRender" type="java.lang.String" />
+	<composite:attribute name="disabled" type="java.lang.Boolean"
+		default="false" />
+	<composite:attribute name="readonly" type="java.lang.Boolean"
+		default="false" />
+	<composite:attribute name="placeholder" type="java.lang.String" />
+	<composite:attribute name="styleClass" type="java.lang.String" />
+	<composite:attribute name="maxlength" type="java.lang.Integer"
+		default="100" />
+	<composite:attribute name="managedBean" type="java.lang.String"
+		default="employeeBean" />
+</composite:interface>
+
+<composite:implementation>
+	<div class="custom-input-field #{cc.attrs.styleClass}">
+		<div class="custom-input-wrapper">
+
+			<!-- Input for type="name" -->
+			<c:if test="#{cc.attrs.type == 'name'}">
+				<h:inputText id="employeeNameInput" value="#{cc.attrs.value}"
+					required="#{cc.attrs.required}"
+					requiredMessage="#{cc.attrs.requiredMessage}"
+					validator="#{employeeBean.validateEmployeeName}"
+					converter="employeeNameConverter" disabled="#{cc.attrs.disabled}"
+					readonly="#{cc.attrs.readonly}" maxlength="#{cc.attrs.maxlength}"
+					styleClass="custom-input #{empty cc.attrs.value ? '' : 'has-value'}"
+					placeholder=" ">
+
+					<f:ajax event="#{cc.attrs.ajaxEvent}" execute="@this"
+						render="@this :messages employeeNameMsg" />
+				</h:inputText>
+
+				<h:message id="employeeNameMsg" for="employeeNameInput"
+					style="color:red;" />
+			</c:if>
+
+
+			<!-- Input for type="date" -->
+			<c:if test="#{cc.attrs.type == 'date'}">
+				<h:inputText id="#{cc.attrs.id}" value="#{cc.attrs.value}"
+					required="#{cc.attrs.required}"
+					requiredMessage="#{cc.attrs.requiredMessage}"
+					validator="#{employeeBean.validateDateOfBirth}"
+					converter="dateConverter" disabled="#{cc.attrs.disabled}"
+					readonly="#{cc.attrs.readonly}" maxlength="#{cc.attrs.maxlength}"
+					styleClass="custom-input #{empty cc.attrs.value ? '' : 'has-value'}"
+					placeholder=" ">
+
+					<composite:insertChildren />
+
+					<f:ajax event="#{cc.attrs.ajaxEvent}"
+						render="#{cc.attrs.ajaxRender != null ? cc.attrs.ajaxRender : cc.attrs.id.concat('Msg ').concat(cc.attrs.id)}" />
+				</h:inputText>
+			</c:if>
+
+			<!-- Input for type="age" -->
+			<c:if test="#{cc.attrs.type == 'age'}">
+				<h:inputText id="#{cc.attrs.id}" type="number"
+					value="#{cc.attrs.value}" required="#{cc.attrs.required}"
+					requiredMessage="#{cc.attrs.requiredMessage}"
+					disabled="#{cc.attrs.disabled}" readonly="#{cc.attrs.readonly}"
+					maxlength="#{cc.attrs.maxlength}"
+					styleClass="custom-input #{empty cc.attrs.value ? '' : 'has-value'}"
+					placeholder=" ">
+
+					<f:convertNumber integerOnly="true" />
+					<f:validateLongRange minimum="18" maximum="100" />
+
+					<f:ajax event="#{cc.attrs.ajaxEvent}"
+						render="#{cc.attrs.ajaxRender != null ? cc.attrs.ajaxRender : cc.attrs.id.concat('Msg ').concat(cc.attrs.id)}" />
+				</h:inputText>
+			</c:if>
+
+			<!-- Input for other types (text, number, email, etc.) -->
+			<c:if
+				test="#{cc.attrs.type != 'name' and cc.attrs.type != 'date' and cc.attrs.type != 'age'}">
+				<h:inputText id="#{cc.attrs.id}" value="#{cc.attrs.value}"
+					required="#{cc.attrs.required}"
+					requiredMessage="#{cc.attrs.requiredMessage}"
+					type="#{cc.attrs.type}" disabled="#{cc.attrs.disabled}"
+					readonly="#{cc.attrs.readonly}" maxlength="#{cc.attrs.maxlength}"
+					styleClass="custom-input #{empty cc.attrs.value ? '' : 'has-value'}"
+					placeholder=" ">
+
+					<composite:insertChildren />
+
+					<f:ajax event="#{cc.attrs.ajaxEvent}"
+						render="#{cc.attrs.ajaxRender != null ? cc.attrs.ajaxRender : cc.attrs.id.concat('Msg ').concat(cc.attrs.id)}" />
+				</h:inputText>
+			</c:if>
+
+			<label for="#{cc.clientId}:#{cc.attrs.id}" class="custom-label">
+				#{cc.attrs.label} <h:outputText value=" *"
+					styleClass="required-asterisk" rendered="#{cc.attrs.required}" />
+			</label> <span class="custom-underline"></span>
+		</div>
+
+		<!-- <h:message id="#{cc.attrs.id}Msg" for="#{cc.attrs.id}"
+			styleClass="custom-error-message" /> -->
+
+		<small class="custom-hint" rendered="#{not empty cc.attrs.hint}">
+			#{cc.attrs.hint} </small>
+	</div>
+
+</composite:implementation>
+
+</html>

@@ -2,28 +2,24 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:custom="http://xmlns.jcp.org/jsf/composite/components"
 	xmlns:h="http://java.sun.com/jsf/html">
 
 <h:head>
 	<title>Add Employee Page</title>
 	<h:outputStylesheet name="css/employee/employee.css" />
+	<h:outputStylesheet library="css" name="input.css" />
 </h:head>
 <h:body>
 	<div class="form-container ">
+	<h:messages id="messages" globalOnly="false" />
 		<h:form id="employee-form" styleClass="form-group">
 			<h2>Add New Employee</h2>
 
 			<div class="form-group">
-				<label for="employeeName">Employee Name:</label>
-				<h:inputText id="employeeName"
-					validator="#{employeeBean.validateEmployeeName}"
-					converter="employeeNameConverter"
+				<custom:input id="employeeName" label="Employee Name" type="name"
 					value="#{employeeBean.newEmployee.employeeName}" required="true"
-					requiredMessage="Employee Name is required">
-					<f:ajax event="blur" render="employeeNameMsg employeeName" />
-				</h:inputText>
-				<h:message id="employeeNameMsg" for="employeeName"
-					styleClass="error-message" />
+					requiredMessage="Employee Name is required" ajaxEvent="blur" />
 			</div>
 
 			<div class="form-group">

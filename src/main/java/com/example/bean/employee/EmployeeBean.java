@@ -104,60 +104,28 @@ public class EmployeeBean implements Serializable {
 	}
 
 	public void validateEmployeeName(FacesContext context, UIComponent component, Object value)
-			throws ValidatorException {
-		UIInput input = (UIInput) component;
-		// Always validate the original user-typed text to avoid conflicts with the converter
-		String clientId = input.getClientId(context);
-		String submittedRaw = context.getExternalContext().getRequestParameterMap().get(clientId);
-		if (submittedRaw == null) {
-			// Fallback: try UIInput's submitted value, then value
-			submittedRaw = input.getSubmittedValue() != null ? input.getSubmittedValue().toString() : null;
-		}
-		String raw = submittedRaw != null ? submittedRaw : (value != null ? value.toString() : null);
+	        throws ValidatorException {
+	    UIInput input = (UIInput) component;
+	    String raw = input.getSubmittedValue() != null ? input.getSubmittedValue().toString() : null;
 
-		if (raw == null || raw.trim().isEmpty()) {
-			String original = (mode == Mode.ADD) ? toProperCase(newEmployee.getEmployeeName())
-					: toProperCase(selectedEmployee.getEmployeeName());
-			input.setSubmittedValue(original);
-			input.setValid(false);
-			throw new ValidatorException(
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Employee Name cannot be empty", null));
-		}
+	    if (raw == null || raw.trim().isEmpty()) {
+	        return; // để requiredMessage xử lý
+	    }
 
-		String normalized = raw.trim().replaceAll("\\s+", " ");
-		boolean formatOk = normalized.matches("^[\\p{L} ]{2,50}$");
-		if (!formatOk) {
-			String original = (mode == Mode.ADD) ? toProperCase(newEmployee.getEmployeeName())
-					: toProperCase(selectedEmployee.getEmployeeName());
-			input.setSubmittedValue(original);
-			input.setValid(false);
-			String errorMessage = String.format(
-					"Employee Name must contain only letters and spaces (2-50 characters). You entered: '%s'", raw);
+	    String normalized = raw.trim().replaceAll("\\s+", " ");
+	    boolean formatOk = normalized.matches("^[\\p{L} ]{2,50}$");
+	    if (!formatOk) {
+	        FacesMessage msg = new FacesMessage(
+	                FacesMessage.SEVERITY_ERROR,
+	                String.format("Employee Name must contain only letters and spaces (2-50 characters). You entered: '%s'", raw),
+	                null);
+	        System.out.println(">>> THROWING ValidatorException with message: " + msg.getSummary());
+	        throw new ValidatorException(msg);
+	    }
 
-			throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR, errorMessage, null));
-		}
-		// If needed later, we can use 'normalized' for further processing
+	    
 	}
 
-	private String toProperCase(String snakeCase) {
-		System.out.println("snakeCase: "+snakeCase);
-		if (snakeCase == null || snakeCase.trim().isEmpty()) {
-			return "";
-		}
-		String normalized = snakeCase.trim().replaceAll("_+", "_");
-		String[] parts = normalized.split("_");
-		StringBuilder result = new StringBuilder();
-		for (String part : parts) {
-			if (!part.isEmpty()) {
-				if (result.length() > 0) {
-					result.append(" ");
-				}
-				String lower = part.toLowerCase();
-				result.append(Character.toUpperCase(lower.charAt(0))).append(lower.substring(1));
-			}
-		}
-		return result.toString();
-	}
 
 	public void validateDateOfBirth(FacesContext context, UIComponent component, Object value)
 			throws ValidatorException {
@@ -261,6 +229,11 @@ public class EmployeeBean implements Serializable {
 	}
 
 	public void updateEmployee() {
+		// In ra tất cả message sau validation (debug)
+	    FacesContext fc = FacesContext.getCurrentInstance();
+	    for (FacesMessage msg : fc.getMessageList()) {
+	        System.out.println("JSF Message in Context: " + msg.getSummary());
+	    }
 		FacesContext context = FacesContext.getCurrentInstance();
 		try {
 			boolean success = employeeDAO.updateEmployee(selectedEmployee);
